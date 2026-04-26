@@ -74,9 +74,12 @@ function App() {
     const result = validateJson(jsonInput);
 
     if (result.isValid) {
+      setParsedJson(null);
+      setView("code");
       setError("");
       setJsonOutput("Valid JSON ✅");
     } else {
+      setParsedJson(null);
       setJsonOutput("");
       setError(result.error);
     }
@@ -241,6 +244,7 @@ function App() {
         >
           Code
         </button>
+
         <button
           className={view === "tree" ? "active-tab" : ""}
           onClick={() => setView("tree")}
@@ -264,27 +268,10 @@ function App() {
           }}
         />
       </div>
-    ) : jsonOutput ? (
-      <SyntaxHighlighter
-        language="json"
-        style={theme === "dark" ? oneDark : oneLight}
-        customStyle={{
-          margin: 0,
-          height: parsedJson ? "452px" : "500px",
-          padding: "18px",
-          background: "var(--editor)",
-          color: "var(--text)",
-          fontSize: "15px",
-          lineHeight: "1.65",
-          borderRadius: 0,
-          whiteSpace: "pre-wrap",
-        }}
-        wrapLongLines={false}
-      >
-        {jsonOutput}
-      </SyntaxHighlighter>
     ) : (
-      <pre>Your formatted JSON will appear here...</pre>
+      <pre className={parsedJson ? "code-output with-tabs" : "code-output"}>
+        <code>{jsonOutput || "Your formatted JSON will appear here..."}</code>
+      </pre>
     )}
   </div>
 </article>
