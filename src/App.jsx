@@ -85,10 +85,11 @@ function App() {
   const handleLoadSample = () => {
     const sample = JSON.stringify(sampleJson);
     setJsonInput(sample);
+    setParsedJson(sampleJson);
     setJsonOutput(formatJson(sample, indent));
+    setView("code");
     setError("");
   };
-
   const handleCopy = async () => {
     if (!jsonOutput) {
       showToast("Nothing to copy");
@@ -226,81 +227,67 @@ function App() {
         </article>
 
         <article className="editor-card">
-          <div className="editor-header">
-            <h3>Output</h3>
-            <span>Formatted result</span>
-          </div>
+  <div className="editor-header">
+    <h3>Output</h3>
+    <span>Formatted result</span>
+  </div>
 
-          {jsonOutput ? (
-  <SyntaxHighlighter
-    language="json"
-    style={theme === "dark" ? oneDark : oneLight}
-    customStyle={{
-      margin: 0,
-      height: "500px",
-      borderRadius: "0 0 24px 24px",
-      background: "transparent",
-    }}
-  >
-    {jsonOutput}
-      </SyntaxHighlighter>
-    ) : (
-      <div className="output-body">
-  {parsedJson && (
-    <div className="output-tabs">
-      <button
-        className={view === "code" ? "active-tab" : ""}
-        onClick={() => setView("code")}
-      >
-        Code
-      </button>
-      <button
-        className={view === "tree" ? "active-tab" : ""}
-        onClick={() => setView("tree")}
-      >
-        Tree
-      </button>
-    </div>
-  )}
+  <div className="output-body">
+    {parsedJson && (
+      <div className="output-tabs">
+        <button
+          className={view === "code" ? "active-tab" : ""}
+          onClick={() => setView("code")}
+        >
+          Code
+        </button>
+        <button
+          className={view === "tree" ? "active-tab" : ""}
+          onClick={() => setView("tree")}
+        >
+          Tree
+        </button>
+      </div>
+    )}
 
-  {parsedJson && view === "tree" ? (
-    <div className="tree-view">
-      <JsonView
-        value={parsedJson}
-        collapsed={2}
-        displayDataTypes={false}
-        style={{
-          background: "transparent",
+    {parsedJson && view === "tree" ? (
+      <div className="tree-view">
+        <JsonView
+          value={parsedJson}
+          collapsed={2}
+          displayDataTypes={false}
+          style={{
+            background: "transparent",
+            color: "var(--text)",
+            fontSize: "15px",
+            fontFamily: '"Fira Code", "Courier New", monospace',
+          }}
+        />
+      </div>
+    ) : jsonOutput ? (
+      <SyntaxHighlighter
+        language="json"
+        style={theme === "dark" ? oneDark : oneLight}
+        customStyle={{
+          margin: 0,
+          height: parsedJson ? "452px" : "500px",
+          padding: "18px",
+          background: "var(--editor)",
           color: "var(--text)",
           fontSize: "15px",
-          fontFamily: '"Fira Code", "Courier New", monospace',
+          lineHeight: "1.65",
+          borderRadius: 0,
+          whiteSpace: "pre-wrap",
         }}
-      />
-    </div>
-  ) : jsonOutput ? (
-    <SyntaxHighlighter
-      language="json"
-      style={theme === "dark" ? oneDark : oneLight}
-      customStyle={{
-        margin: 0,
-        height: parsedJson ? "452px" : "500px",
-        padding: "18px",
-        background: "var(--editor)",
-        color: "var(--text)",
-        fontSize: "15px",
-        lineHeight: "1.65",
-        borderRadius: 0,
-      }}
-      wrapLongLines
-    >
-      {jsonOutput}
-    </SyntaxHighlighter>
-  ) : (
-    <pre>Your formatted JSON will appear here...</pre>
-  )}
-</div>
+        wrapLongLines={false}
+      >
+        {jsonOutput}
+      </SyntaxHighlighter>
+    ) : (
+      <pre>Your formatted JSON will appear here...</pre>
     )}
-        </article>
+  </div>
+</article>
       </section>
       {toast && <div className="toast">{toast}</div>}
     </main>
