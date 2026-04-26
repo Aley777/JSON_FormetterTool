@@ -9,6 +9,9 @@
   --danger: #dc2626;
   --success: #22c55e;
   --editor: #020617;
+  --heading-gradient: linear-gradient(90deg, #ffffff 0%, #dbeafe 45%, #60a5fa 100%);
+  --heading-solid: #f8fafc;
+  --subtitle: #b6c7e6;
 }
 
 :root[data-theme="light"] {
@@ -22,6 +25,9 @@
   --danger: #dc2626;
   --success: #16a34a;
   --editor: #f8fafc;
+  --heading-gradient: linear-gradient(90deg, #0f172a 0%, #2563eb 65%, #60a5fa 100%);
+  --heading-solid: #0f172a;
+  --subtitle: #64748b;
 }
 
 * {
@@ -79,8 +85,9 @@ p {
   margin-top: 0;
 }
 
-h1, h2, h3 {
-  color: #f8fafc; /* saf beyaz değil, daha yumuşak */
+h2,
+h3 {
+  color: var(--heading-solid);
 }
 
 h1 {
@@ -90,7 +97,7 @@ h1 {
   letter-spacing: -0.06em;
   font-weight: 900;
 
-  background: linear-gradient(90deg, #ffffff 0%, #dbeafe 45%, #60a5fa 100%);
+  background: var(--heading-gradient);
   background-clip: text;
   -webkit-background-clip: text;
 
@@ -134,6 +141,7 @@ h1 {
   margin-bottom: 12px;
   font-size: clamp(26px, 4vw, 44px);
   letter-spacing: -0.04em;
+  color: var(--heading-solid);
 }
 
 .hero-card p {
@@ -352,7 +360,7 @@ pre {
 
 .subtitle {
   margin: 14px 0 0;
-  color: #b6c7e6;
+  color: var(--subtitle);
   font-size: clamp(18px, 2vw, 24px);
   font-weight: 600;
 }
