@@ -8,6 +8,7 @@ import {
 } from "./utils/jsonTools";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import JsonView from "@uiw/react-json-view";
 
 const sampleJson = {
   app: "JSON Formatter Tool",
@@ -27,6 +28,8 @@ function App() {
   const [indent, setIndent] = useState(2);
   const [theme, setTheme] = useState("dark");
   const [toast, setToast] = useState("");
+  const [parsedJson, setParsedJson] = useState(null);
+  const [view, setView] = useState("code");
 
   const characterCount = jsonInput.length;
   const lineCount = jsonInput ? jsonInput.split("\n").length : 0;
@@ -38,21 +41,30 @@ function App() {
 
   const handleFormat = () => {
     try {
+      const parsed = JSON.parse(jsonInput);
       const result = formatJson(jsonInput, indent);
+
+      setParsedJson(parsed);
       setJsonOutput(result);
+      setView("code");
       setError("");
     } catch (err) {
+      setParsedJson(null);
       setJsonOutput("");
       setError(err.message);
     }
   };
-
   const handleMinify = () => {
     try {
+      const parsed = JSON.parse(jsonInput);
       const result = minifyJson(jsonInput);
+
+      setParsedJson(parsed);
       setJsonOutput(result);
+      setView("code");
       setError("");
     } catch (err) {
+      setParsedJson(null);
       setJsonOutput("");
       setError(err.message);
     }
@@ -101,6 +113,8 @@ function App() {
     setJsonInput("");
     setJsonOutput("");
     setError("");
+    setParsedJson(null);
+    setView("code");
   };
 
   const showToast = (message) => {
@@ -231,7 +245,60 @@ function App() {
     {jsonOutput}
       </SyntaxHighlighter>
     ) : (
-      <pre>Your formatted JSON will appear here...</pre>
+      <div className="output-body">
+  {parsedJson && (
+    <div className="output-tabs">
+      <button
+        className={view === "code" ? "active-tab" : ""}
+        onClick={() => setView("code")}
+      >
+        Code
+      </button>
+      <button
+        className={view === "tree" ? "active-tab" : ""}
+        onClick={() => setView("tree")}
+      >
+        Tree
+      </button>
+    </div>
+  )}
+
+  {parsedJson && view === "tree" ? (
+    <div className="tree-view">
+      <JsonView
+        value={parsedJson}
+        collapsed={2}
+        displayDataTypes={false}
+        style={{
+          background: "transparent",
+          color: "var(--text)",
+          fontSize: "15px",
+          fontFamily: '"Fira Code", "Courier New", monospace',
+        }}
+      />
+    </div>
+  ) : jsonOutput ? (
+    <SyntaxHighlighter
+      language="json"
+      style={theme === "dark" ? oneDark : oneLight}
+      customStyle={{
+        margin: 0,
+        height: parsedJson ? "452px" : "500px",
+        padding: "18px",
+        background: "var(--editor)",
+        color: "var(--text)",
+        fontSize: "15px",
+        lineHeight: "1.65",
+        borderRadius: 0,
+      }}
+      wrapLongLines
+    >
+      {jsonOutput}
+    </SyntaxHighlighter>
+  ) : (
+    <pre>Your formatted JSON will appear here...</pre>
+  )}
+</div>
     )}
         </article>
       </section>

@@ -378,3 +378,38 @@ pre {
   font-weight: 800;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
 }
+
+.output-body {
+  background: var(--editor);
+}
+
+.output-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.output-tabs button {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 7px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.output-tabs button.active-tab {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.tree-view {
+  height: 452px;
+  overflow: auto;
+  padding: 18px;
+  background: var(--editor);
+}
