@@ -270,6 +270,7 @@ button.danger {
   border-radius: 24px;
   background: var(--card);
   box-shadow: 0 20px 70px rgba(0, 0, 0, 0.16);
+  position: relative;
 }
 
 .editor-header {
@@ -449,4 +450,25 @@ pre {
   background:
     linear-gradient(rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.08)),
     var(--editor);
+}
+
+.drag-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.drag-overlay p {
+  font-size: 20px;
+  font-weight: 800;
+  color: #93c5fd;
+  letter-spacing: 0.02em;
 }

@@ -254,27 +254,34 @@ const handleFileDrop = (event) => {
 
       <section className="editor-grid">
         <article
-          className={`editor-card ${isDragging ? "dragging" : ""}`}
-          onDragOver={(event) => {
-            event.preventDefault();
-            setIsDragging(true);
-          }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={handleFileDrop}
-        >
-          <div className="editor-header">
-            <h3>Input</h3>
-            <span>Paste or drop .json file</span>
-          </div>
+  className={`editor-card ${isDragging ? "dragging" : ""}`}
+  onDragOver={(event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  }}
+  onDragLeave={() => setIsDragging(false)}
+  onDrop={handleFileDrop}
+>
+  <div className="editor-header">
+    <h3>Input</h3>
+    <span>Paste or drop .json file</span>
+  </div>
 
-          <textarea
-            value={jsonInput}
-            onChange={(e) => {
-              setJsonInput(e.target.value);
-              setError("");
-            }}
-            placeholder='Paste JSON here or drag & drop a .json file...'          />
-        </article>
+  <textarea
+    value={jsonInput}
+    onChange={(e) => {
+      setJsonInput(e.target.value);
+      setError("");
+    }}
+    placeholder='Paste JSON here or drag & drop a .json file...'
+  />
+
+  {isDragging && (
+    <div className="drag-overlay">
+      <p>Drop your JSON file here</p>
+    </div>
+  )}
+</article>
 
         <article className="editor-card">
   <div className="editor-header">
