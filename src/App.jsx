@@ -6,8 +6,6 @@ import {
   minifyJson,
   validateJson,
 } from "./utils/jsonTools";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import JsonView from "@uiw/react-json-view";
 
 const sampleJson = {
@@ -268,27 +266,9 @@ function App() {
       }}
     />
   </div>
-) : jsonOutput ? (
-  <SyntaxHighlighter
-    language="json"
-    style={theme === "dark" ? oneDark : oneLight}
-    customStyle={{
-      margin: 0,
-      height: parsedJson ? "452px" : "500px",
-      padding: "18px",
-
-      background: "transparent", // 🔥 önemli
-      fontSize: "15px",
-      lineHeight: "1.65",
-      borderRadius: 0,
-    }}
-    wrapLongLines={false} // 🔥 önemli
-  >
-    {jsonOutput}
-  </SyntaxHighlighter>
 ) : (
-  <pre className="code-output">
-    Your formatted JSON will appear here...
+  <pre className={parsedJson ? "code-output with-tabs" : "code-output"}>
+    <code>{jsonOutput || "Your formatted JSON will appear here..."}</code>
   </pre>
 )}
   </div>
