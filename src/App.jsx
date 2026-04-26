@@ -99,6 +99,7 @@ function App() {
         <div>
           <p className="eyebrow">Developer Tool</p>
           <h1>JSON Formatter</h1>
+          <p className="subtitle">Format, validate and minify JSON instantly.</p>
         </div>
 
         <button
