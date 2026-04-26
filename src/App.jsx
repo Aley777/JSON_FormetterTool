@@ -28,6 +28,7 @@ function App() {
   const [toast, setToast] = useState("");
   const [parsedJson, setParsedJson] = useState(null);
   const [view, setView] = useState("code");
+  const [isDragging, setIsDragging] = useState(false);
 
   const characterCount = jsonInput.length;
   const lineCount = jsonInput ? jsonInput.split("\n").length : 0;
@@ -127,6 +128,47 @@ function App() {
     }, 2200);
   };
 
+  const handleFileContent = (content) => {
+  try {
+    const parsed = JSON.parse(content);
+    const formatted = formatJson(content, indent);
+
+    setJsonInput(content);
+    setParsedJson(parsed);
+    setJsonOutput(formatted);
+    setView("code");
+    setError("");
+    showToast("JSON file loaded");
+  } catch (err) {
+    setParsedJson(null);
+    setJsonOutput("");
+    setError(err.message);
+    showToast("Invalid JSON file");
+  }
+};
+
+const handleFileDrop = (event) => {
+  event.preventDefault();
+  setIsDragging(false);
+
+  const file = event.dataTransfer.files[0];
+
+  if (!file) return;
+
+  if (!file.name.endsWith(".json")) {
+    showToast("Please upload a .json file");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    handleFileContent(reader.result);
+  };
+
+  reader.readAsText(file);
+};
+
   return (
     <main className="app">
       <header className="topbar">
@@ -211,10 +253,18 @@ function App() {
       </section>
 
       <section className="editor-grid">
-        <article className="editor-card">
+        <article
+          className={`editor-card ${isDragging ? "dragging" : ""}`}
+          onDragOver={(event) => {
+            event.preventDefault();
+            setIsDragging(true);
+          }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleFileDrop}
+        >
           <div className="editor-header">
             <h3>Input</h3>
-            <span>Paste JSON here</span>
+            <span>Paste or drop .json file</span>
           </div>
 
           <textarea
@@ -223,8 +273,7 @@ function App() {
               setJsonInput(e.target.value);
               setError("");
             }}
-            placeholder='{"name":"Ahmet","skills":["React","JavaScript"]}'
-          />
+            placeholder='Paste JSON here or drag & drop a .json file...'          />
         </article>
 
         <article className="editor-card">

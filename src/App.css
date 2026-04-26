@@ -437,3 +437,16 @@ pre {
   color: inherit;
   white-space: pre;
 }
+
+.editor-card.dragging {
+  border-color: var(--primary);
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.18),
+    0 20px 70px rgba(0, 0, 0, 0.16);
+}
+
+.editor-card.dragging textarea {
+  background:
+    linear-gradient(rgba(59, 130, 246, 0.08), rgba(59, 130, 246, 0.08)),
+    var(--editor);
+}
