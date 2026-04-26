@@ -420,18 +420,24 @@ pre {
   margin: 0;
   padding: 18px;
   overflow: auto;
-  background: var(--editor);
+  display: block;
+
+  background: transparent; /* 🔥 en kritik */
   color: var(--text);
+
   font-family: "Fira Code", "Courier New", monospace;
   font-size: 15px;
   line-height: 1.65;
-  white-space: pre;
-}
 
-.code-output.with-tabs {
-  height: 452px;
+  white-space: pre;
 }
 
 .code-output code {
-  white-space: pre;
+  background: transparent; /* 🔥 bu da önemli */
+  color: inherit;
+}
+
+.output-body {
+  background: var(--editor);
+  border-radius: 0 0 24px 24px;
 }
