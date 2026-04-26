@@ -6,6 +6,8 @@ import {
   minifyJson,
   validateJson,
 } from "./utils/jsonTools";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const sampleJson = {
   app: "JSON Formatter Tool",
@@ -196,7 +198,22 @@ function App() {
             <span>Formatted result</span>
           </div>
 
-          <pre>{jsonOutput || "Your formatted JSON will appear here..."}</pre>
+          {jsonOutput ? (
+  <SyntaxHighlighter
+    language="json"
+    style={theme === "dark" ? oneDark : oneLight}
+    customStyle={{
+      margin: 0,
+      height: "500px",
+      borderRadius: "0 0 24px 24px",
+      background: "transparent",
+    }}
+  >
+    {jsonOutput}
+      </SyntaxHighlighter>
+    ) : (
+      <pre>Your formatted JSON will appear here...</pre>
+    )}
         </article>
       </section>
     </main>
