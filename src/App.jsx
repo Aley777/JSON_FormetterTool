@@ -1,133 +1,182 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import {
+  downloadJson,
+  formatJson,
+  minifyJson,
+  validateJson,
+} from "./utils/jsonTools";
 
 const sampleJson = {
+  app: "JSON Formatter Tool",
+  type: "Developer Tool",
   user: {
     name: "Ahmet",
     role: "Frontend Developer",
     skills: ["React", "JavaScript", "CSS"],
-    active: true,
+    availableForHire: true,
   },
-  projects: [
-    {
-      name: "JSON Formatter",
-      type: "Developer Tool",
-    },
-  ],
 };
 
 function App() {
   const [jsonInput, setJsonInput] = useState("");
-  const [formattedJson, setFormattedJson] = useState("");
+  const [jsonOutput, setJsonOutput] = useState("");
   const [error, setError] = useState("");
   const [indent, setIndent] = useState(2);
+  const [theme, setTheme] = useState("dark");
 
-  const formatJson = () => {
+  const characterCount = jsonInput.length;
+  const lineCount = jsonInput ? jsonInput.split("\n").length : 0;
+  const isValid = jsonInput && !error && jsonOutput;
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  const handleFormat = () => {
     try {
-      const parsed = JSON.parse(jsonInput);
-      const pretty = JSON.stringify(parsed, null, Number(indent));
-      setFormattedJson(pretty);
+      const result = formatJson(jsonInput, indent);
+      setJsonOutput(result);
       setError("");
-    } catch {
-      setFormattedJson("");
-      setError("Invalid JSON. Please check your syntax.");
+    } catch (err) {
+      setJsonOutput("");
+      setError(err.message);
     }
   };
 
-  const minifyJson = () => {
+  const handleMinify = () => {
     try {
-      const parsed = JSON.parse(jsonInput);
-      const minified = JSON.stringify(parsed);
-      setFormattedJson(minified);
+      const result = minifyJson(jsonInput);
+      setJsonOutput(result);
       setError("");
-    } catch {
-      setFormattedJson("");
-      setError("Invalid JSON. Please check your syntax.");
+    } catch (err) {
+      setJsonOutput("");
+      setError(err.message);
     }
   };
 
-  const loadSample = () => {
+  const handleValidate = () => {
+    const result = validateJson(jsonInput);
+
+    if (result.isValid) {
+      setError("");
+      setJsonOutput("Valid JSON ✅");
+    } else {
+      setJsonOutput("");
+      setError(result.error);
+    }
+  };
+
+  const handleLoadSample = () => {
     const sample = JSON.stringify(sampleJson);
     setJsonInput(sample);
-    setFormattedJson(JSON.stringify(sampleJson, null, Number(indent)));
+    setJsonOutput(formatJson(sample, indent));
     setError("");
   };
 
-  const clearAll = () => {
+  const handleCopy = async () => {
+    if (!jsonOutput) return;
+
+    await navigator.clipboard.writeText(jsonOutput);
+  };
+
+  const handleDownload = () => {
+    if (!jsonOutput || error) return;
+    downloadJson(jsonOutput);
+  };
+
+  const handleClear = () => {
     setJsonInput("");
-    setFormattedJson("");
+    setJsonOutput("");
     setError("");
   };
-
-  const copyOutput = async () => {
-    if (!formattedJson) return;
-
-    try {
-      await navigator.clipboard.writeText(formattedJson);
-      alert("Formatted JSON copied!");
-    } catch {
-      alert("Copy failed.");
-    }
-  };
-
-  const isValid = jsonInput && !error && formattedJson;
 
   return (
     <main className="app">
-      <section className="hero">
-        <p className="badge">Developer Tool</p>
-        <h1>JSON Formatter</h1>
-        <p>
-          Paste messy JSON, validate it, format it, minify it, and copy clean
-          output instantly.
-        </p>
+      <header className="topbar">
+        <div>
+          <p className="eyebrow">Developer Tool</p>
+          <h1>JSON Formatter</h1>
+        </div>
+
+        <button
+          className="theme-toggle"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </header>
+
+      <section className="hero-card">
+        <div>
+          <h2>Format, validate and minify JSON instantly.</h2>
+          <p>
+            A recruiter-friendly React project with clean UI, utility-based
+            logic, theme support and practical developer features.
+          </p>
+        </div>
+
+        <div className="stats">
+          <div>
+            <strong>{characterCount}</strong>
+            <span>Characters</span>
+          </div>
+          <div>
+            <strong>{lineCount}</strong>
+            <span>Lines</span>
+          </div>
+          <div>
+            <strong>{indent}</strong>
+            <span>Indent</span>
+          </div>
+        </div>
       </section>
 
       <section className="controls">
-        <div className="select-group">
-          <label htmlFor="indent">Indent size</label>
-          <select
-            id="indent"
-            value={indent}
-            onChange={(e) => setIndent(e.target.value)}
-          >
+        <label>
+          Indent
+          <select value={indent} onChange={(e) => setIndent(e.target.value)}>
             <option value="2">2 spaces</option>
             <option value="4">4 spaces</option>
             <option value="8">8 spaces</option>
           </select>
-        </div>
+        </label>
 
-        <div className="toolbar">
-          <button onClick={formatJson}>Format JSON</button>
-          <button className="secondary" onClick={minifyJson}>
+        <div className="actions">
+          <button onClick={handleFormat}>Format</button>
+          <button onClick={handleValidate} className="secondary">
+            Validate
+          </button>
+          <button onClick={handleMinify} className="secondary">
             Minify
           </button>
-          <button className="secondary" onClick={loadSample}>
-            Load Sample
+          <button onClick={handleLoadSample} className="secondary">
+            Sample
           </button>
-          <button className="secondary" onClick={copyOutput}>
-            Copy Output
+          <button onClick={handleCopy} className="secondary">
+            Copy
           </button>
-          <button className="danger" onClick={clearAll}>
+          <button onClick={handleDownload} className="secondary">
+            Download
+          </button>
+          <button onClick={handleClear} className="danger">
             Clear
           </button>
         </div>
       </section>
 
-      <section className="status-row">
-        <span className={isValid ? "status valid" : "status idle"}>
-          {isValid ? "Valid JSON" : "Waiting for JSON"}
+      <section className="status">
+        <span className={isValid ? "pill success" : "pill neutral"}>
+          {isValid ? "Valid JSON" : "Waiting for input"}
         </span>
 
-        <span>{jsonInput.length} characters</span>
+        {error && <span className="pill error">Invalid JSON: {error}</span>}
       </section>
 
-      {error && <p className="error">{error}</p>}
-
       <section className="editor-grid">
-        <div className="panel">
-          <div className="panel-header">
-            <h2>Input</h2>
+        <article className="editor-card">
+          <div className="editor-header">
+            <h3>Input</h3>
             <span>Paste JSON here</span>
           </div>
 
@@ -139,16 +188,16 @@ function App() {
             }}
             placeholder='{"name":"Ahmet","skills":["React","JavaScript"]}'
           />
-        </div>
+        </article>
 
-        <div className="panel">
-          <div className="panel-header">
-            <h2>Output</h2>
-            <span>Formatted / Minified JSON</span>
+        <article className="editor-card">
+          <div className="editor-header">
+            <h3>Output</h3>
+            <span>Formatted result</span>
           </div>
 
-          <pre>{formattedJson || "Formatted JSON will appear here..."}</pre>
-        </div>
+          <pre>{jsonOutput || "Your formatted JSON will appear here..."}</pre>
+        </article>
       </section>
     </main>
   );
