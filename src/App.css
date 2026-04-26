@@ -152,3 +152,54 @@ pre {
     height: 360px;
   }
 }
+
+.controls {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.select-group {
+  display: grid;
+  gap: 8px;
+}
+
+.select-group label {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+select {
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 11px 14px;
+  background: #111827;
+  color: #e5e7eb;
+  outline: none;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  color: #94a3b8;
+}
+
+.status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+.status.valid {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+}
+
+.status.idle {
+  background: rgba(148, 163, 184, 0.15);
+}
