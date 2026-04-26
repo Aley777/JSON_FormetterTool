@@ -26,6 +26,7 @@ function App() {
   const [error, setError] = useState("");
   const [indent, setIndent] = useState(2);
   const [theme, setTheme] = useState("dark");
+  const [toast, setToast] = useState("");
 
   const characterCount = jsonInput.length;
   const lineCount = jsonInput ? jsonInput.split("\n").length : 0;
@@ -77,20 +78,37 @@ function App() {
   };
 
   const handleCopy = async () => {
-    if (!jsonOutput) return;
+    if (!jsonOutput) {
+      showToast("Nothing to copy");
+      return;
+    }
 
     await navigator.clipboard.writeText(jsonOutput);
+    showToast("Copied to clipboard");
   };
 
   const handleDownload = () => {
-    if (!jsonOutput || error) return;
+    if (!jsonOutput || error) {
+      showToast("No valid JSON to download");
+      return;
+    }
+
     downloadJson(jsonOutput);
+    showToast("JSON downloaded");
   };
 
   const handleClear = () => {
     setJsonInput("");
     setJsonOutput("");
     setError("");
+  };
+
+  const showToast = (message) => {
+    setToast(message);
+
+    setTimeout(() => {
+      setToast("");
+    }, 2200);
   };
 
   return (
@@ -217,6 +235,7 @@ function App() {
     )}
         </article>
       </section>
+      {toast && <div className="toast">{toast}</div>}
     </main>
   );
 }
