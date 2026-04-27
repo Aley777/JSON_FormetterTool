@@ -268,13 +268,32 @@ const handleFileDrop = (event) => {
   </div>
 
   <textarea
-    value={jsonInput}
-    onChange={(e) => {
-      setJsonInput(e.target.value);
+  value={jsonInput}
+  onChange={(e) => {
+    setJsonInput(e.target.value);
+    setError("");
+  }}
+  onPaste={(e) => {
+    const pasted = e.clipboardData.getData("text");
+
+    try {
+      const parsed = JSON.parse(pasted);
+      const formatted = formatJson(pasted, indent);
+
+      setJsonInput(pasted);
+      setParsedJson(parsed);
+      setJsonOutput(formatted);
+      setView("code");
       setError("");
-    }}
-    placeholder='Paste JSON here or drag & drop a .json file...'
-  />
+
+      showToast("JSON auto-formatted");
+      e.preventDefault(); // 🔥 önemli
+    } catch {
+      // JSON değilse normal yapıştırma
+    }
+  }}
+  placeholder='Paste JSON here or drag & drop a .json file...'
+/>
 
   {isDragging && (
     <div className="drag-overlay">
