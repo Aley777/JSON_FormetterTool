@@ -274,23 +274,51 @@ const handleFileDrop = (event) => {
         </label>
 
         <div className="actions">
-          <button onClick={handleFormat}>Format</button>
-          <button onClick={handleValidate} className="secondary">
+          <button onClick={handleFormat} disabled={!jsonInput.trim()}>
+            Format
+          </button>
+
+          <button
+            onClick={handleValidate}
+            className="secondary"
+            disabled={!jsonInput.trim()}
+          >
             Validate
           </button>
-          <button onClick={handleMinify} className="secondary">
+
+          <button
+            onClick={handleMinify}
+            className="secondary"
+            disabled={!jsonInput.trim()}
+          >
             Minify
           </button>
+
           <button onClick={handleLoadSample} className="secondary">
             Sample
           </button>
-          <button onClick={handleCopy} className="secondary">
+
+          <button
+            onClick={handleCopy}
+            className="secondary"
+            disabled={!jsonOutput}
+          >
             Copy
           </button>
-          <button onClick={handleDownload} className="secondary">
+
+          <button
+            onClick={handleDownload}
+            className="secondary"
+            disabled={!jsonOutput || !!error}
+          >
             Download
           </button>
-          <button onClick={handleClear} className="danger">
+
+          <button
+            onClick={handleClear}
+            className="danger"
+            disabled={!jsonInput && !jsonOutput}
+          >
             Clear
           </button>
         </div>
