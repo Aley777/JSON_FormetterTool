@@ -472,3 +472,32 @@ pre {
   color: #93c5fd;
   letter-spacing: 0.02em;
 }
+
+.url-field {
+  min-width: min(520px, 100%);
+  flex: 1;
+}
+
+.url-row {
+  display: flex;
+  gap: 10px;
+}
+
+.url-row input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 11px 14px;
+  background: var(--card);
+  color: var(--text);
+  outline: none;
+}
+
+.url-row button {
+  white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

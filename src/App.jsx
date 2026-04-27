@@ -29,6 +29,8 @@ function App() {
   const [parsedJson, setParsedJson] = useState(null);
   const [view, setView] = useState("code");
   const [isDragging, setIsDragging] = useState(false);
+  const [jsonUrl, setJsonUrl] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
 
   const characterCount = jsonInput.length;
   const lineCount = jsonInput ? jsonInput.split("\n").length : 0;
@@ -169,6 +171,41 @@ const handleFileDrop = (event) => {
   reader.readAsText(file);
 };
 
+  const handleFetchJson = async () => {
+    if (!jsonUrl.trim()) {
+      showToast("Enter a JSON URL");
+      return;
+    }
+
+    try {
+      setIsFetching(true);
+
+      const response = await fetch(jsonUrl);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch JSON");
+      }
+
+      const data = await response.json();
+      const raw = JSON.stringify(data);
+      const formatted = JSON.stringify(data, null, Number(indent));
+
+      setJsonInput(raw);
+      setParsedJson(data);
+      setJsonOutput(formatted);
+      setView("code");
+      setError("");
+      showToast("JSON fetched successfully");
+    } catch (err) {
+      setParsedJson(null);
+      setJsonOutput("");
+      setError(err.message);
+      showToast("Could not fetch JSON");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   return (
     <main className="app">
       <header className="topbar">
@@ -219,6 +256,21 @@ const handleFileDrop = (event) => {
             <option value="4">4 spaces</option>
             <option value="8">8 spaces</option>
           </select>
+        </label>
+
+        <label className="url-field">
+          JSON URL
+          <div className="url-row">
+            <input
+              type="url"
+              value={jsonUrl}
+              onChange={(e) => setJsonUrl(e.target.value)}
+              placeholder="https://api.example.com/data.json"
+            />
+            <button onClick={handleFetchJson} disabled={isFetching}>
+              {isFetching ? "Fetching..." : "Fetch"}
+            </button>
+          </div>
         </label>
 
         <div className="actions">
